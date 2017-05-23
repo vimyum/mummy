@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
@@ -25,145 +26,112 @@ const styleSheet = createStyleSheet('UndockedDrawer', () => ({
 }));
 
 class UndockedDrawer extends React.Component<any, any> {
-  state = {
-    open: {
-      top: false,
-      left: false,
-      bottom: false,
-      right: false,
-    },
-  };
+    state = {
+        open: {
+            top: false,
+            left: false,
+            bottom: false,
+            right: false,
+        },
+    };
 
-  toggleDrawer = (side, open) => {
-    const drawerState = {};
-    drawerState[side] = open;
-    this.setState({ open: drawerState });
-  };
+    constructor(props) {
+        super(props);
+        this.componentDidMount = this.componentDidMount.bind(this);
+    }
 
-  handleLeftOpen = () => this.toggleDrawer('left', true);
-  handleLeftClose = () => this.toggleDrawer('left', false);
 
-  private componentDidMount = () => {
-      var templates = document.querySelectorAll('.draggable');
-      [].forEach.call(templates, function(col) {
-          col.addEventListener('dragstart', () => {console.log("drag start")}, false);
-          col.addEventListener('dragend', () => {console.log("drag end")}, false);
-          col.addEventListener('drop', (e) => {
-              console.log('drop is called');
-              if (e.stopPropagation) {
-                  console.log('stop propagation');
-                  e.stopPropagation(); // stops the browser from redirecting.
-              }
-          }, false);
-          // col.addEventListener('dragleave', () => {console.log("drag leave")}, false);
-      });
-  }
+    toggleDrawer = (side, open) => {
+        const drawerState = {};
+        drawerState[side] = open;
+        this.setState({ open: drawerState });
+    };
 
-  render() {
-      const classes = this.props.classes;
+    handleLeftOpen = () => this.toggleDrawer('left', true);
+    handleLeftClose = () => this.toggleDrawer('left', false);
 
-      const mailFolderListItems = (
-          <div>
+    handleDragStart = (ev) => {
+        console.log("drag start");
+        ev.dataTransfer.dropEffect = "move";
+        console.log("ev.target: " + ev.target);
 
-          <ListItem >
-          <div className={"draggable"} draggable={true}>
-          <ListItemIcon>
-          <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Inbox" />
-          </div>
-          </ListItem>
+        let data = {
+            type: ev.target.getAttribute('data-node-type'),
+        }
+        ev.dataTransfer.setData('text', JSON.stringify(data)); 
+    }
 
-          <ListItem >
-          <div className={"draggable"} draggable={true}>
-          <ListItemIcon>
-          <StarIcon />
-          </ListItemIcon>
-          <ListItemText primary="Starred" />
-          </div>
-          </ListItem>
+    private handleDragEnd = () => {
+        console.log("drag end");
+        // this.props.onDrop();
+    }
 
-          <ListItem >
-          <div className={"draggable"} draggable={true}>
-          <ListItemIcon>
-          <SendIcon />
-          </ListItemIcon>
-          </div>
-          <ListItemText primary="Send mail" />
-          </ListItem>
-          <ListItem button>
-          <ListItemIcon>
-          <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Drafts" />
-          </ListItem>
-          </div>
-      );
+    private handleDrop = (ev) => {
+        console.log('drop is called.');
+        if (ev.stopPropagation) {
+            console.log('stop propagation');
+            ev.stopPropagation(); // stops the browser from redirecting.
+        }
+    }
 
-      const otherMailFolderListItems = (
-          <div>
-          <ListItem button>
-          <ListItemIcon>
-          <MailIcon />
-          </ListItemIcon>
-          <ListItemText primary="All mail" />
-          </ListItem>
-          <ListItem button>
-          <ListItemIcon>
-          <DeleteIcon />
-          </ListItemIcon>
-          <ListItemText primary="Trash" />
-          </ListItem>
-          <ListItem button>
-          <ListItemIcon>
-          <ReportIcon />
-          </ListItemIcon>
-          <ListItemText primary="Spam" />
-          </ListItem>
-          </div>
-      );
+    componentDidMount = () => {
+        console.log("componentDidMount is called (in Drawer)");
+        // var templates = ReactDOM.findDOMNode(this.refs["template"]);
+        let templates = document.querySelectorAll('.draggable');
 
-      const sideList = (
-          <div>
-          <List className={classes.list} disablePadding>
-          {mailFolderListItems}
-          </List>
-          <Divider />
-          <List className={classes.list} disablePadding>
-          {otherMailFolderListItems}
-          </List>
-          </div>
-      );
+        console.log("start..");
+        [].forEach.call(templates, (col) => {
+            console.log("col: " + col);
+            col.addEventListener('dragstart', this.handleDragStart, false);
+            col.addEventListener('drop', this.handleDrop, false);
+            col.addEventListener('dragend', this.handleDragEnd, false);
+        });
+        console.log("end..");
+    }
 
-      const fullList = (
-          <div>
-          <List className={classes.listFull} disablePadding>
-          {mailFolderListItems}
-          </List>
-          <Divider />
-          <List className={classes.listFull} disablePadding>
-          {otherMailFolderListItems}
-          </List>
-          </div>
-      );
+    render() {
+        const classes = this.props.classes;
 
-      return (
-          <div>
-          <Drawer
-          open={true}
-          onRequestClose={this.handleLeftClose}
-          >
-          {sideList}
-          </Drawer>
-          </div>
-      );
-  }
+        let templateList = [];
+        for (let template of this.props.templates) {
+            templateList.push(
+                <ListItem  key={template.type}>
+                <div className={"draggable"} ref="template" draggable={true}
+                    data-node-type={template.type}
+                >
+                    <ListItemIcon>
+                        {template.iconElement}
+                    </ListItemIcon>
+                    <ListItemText primary={template.name} />
+                </div>
+                </ListItem>
+            );
+        }
+    
+        const sideList = (
+            <div>
+            <List className={classes.list} disablePadding>
+                {templateList}
+            </List>
+            <Divider />
+            </div>
+        );
+
+        console.log('---- is Open ---');
+        console.log('-->' + this.props.isOpen);
+
+        return (
+            <div>
+            <Drawer
+                docked={true}
+                open={this.props.isOpen}
+                onRequestClose={this.handleLeftClose}
+            >
+            {sideList}
+            </Drawer>
+            </div>
+        );
+    }
 }
-
-/*
-   UndockedDrawer.propTypes = {
-classes: PropTypes.object.isRequired,
-};
- */
 
 export default withStyles(styleSheet)(UndockedDrawer);
