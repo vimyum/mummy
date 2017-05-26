@@ -1,38 +1,18 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import Drawer from 'material-ui/Drawer';
-
-import Icon from 'material-ui/Icon';
-import InboxIcon from 'material-ui-icons/Inbox';
-import InputIcon from 'material-ui-icons/Input';
+import Node from './nodeInstance';
 
 // 型情報なし
 let JsPlumb = require('jsplumb');
 
-import NodeTemplates from './nodeTemplates';
-
-export interface Props {
-    classes?: any;
-    node?: any;
-}
-
-export interface IState {
-		users?: any;
-}
-
-class Dashboard extends React.Component<any, IState> {
+class Dashboard extends React.Component<any, any> {
     public jpInstance;
     constructor(props) {
         super();
         const {classes, ... other } = props;
-        this.state = {
-            users: [],
-        };
         this.componentDidMount = this.componentDidMount.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this);
         this.componentDidUpdate = this.componentDidUpdate.bind(this);
@@ -41,8 +21,6 @@ class Dashboard extends React.Component<any, IState> {
     componentWillMount() {
         // JsPlumbの初期化
         console.log('componentWillMount is called.');
-        console.log('this.jpInstance:' + this.jpInstance);
-        console.log('NodeTemplates: ' + NodeTemplates);
     }
 
     componentWillUnmount() {
@@ -136,10 +114,10 @@ class Dashboard extends React.Component<any, IState> {
     }
 
     render() {
-        let cardLists = [];
+        let nodes = [];
         for (let node of this.props.nodes) {
-            cardLists.push(
-                <StyledUserCard node={node} key={node.id}/>
+            nodes.push(
+                <Node node={node} key={node.id}/>
             );
         }
         return <div id="plumbContainer" 
@@ -157,37 +135,17 @@ class Dashboard extends React.Component<any, IState> {
               }}
               style={{"height":"600px", "width":"800px"}}
             >
-            {cardLists}
-            </div>;
-    }
-}
-
-export class UserCard extends React.Component<Props, undefined> {
-    constructor() {
-        super();
-    }
-    render() {
-        let nodeInfo = NodeTemplates.get(this.props.node.type);
-        return <div>
-            <Paper 
-                id={this.props.node.id}
-                className={"node " + this.props.classes.paper}
-                data-anchor={nodeInfo.anchor}
-                style={{"position":"absolute", "top": this.props.node.top, "left": this.props.node.left}}>
-            {nodeInfo.iconElement}
-            </Paper>
+            {nodes}
             </div>;
     }
 }
 
 const styleSheet = createStyleSheet('Dashboard', (theme) => ({
     paper: {
-        padding: 16,
         textAlign: 'center',
     },
 }));
 
-let StyledUserCard = withStyles(styleSheet)(UserCard);
 export default withStyles(styleSheet)(Dashboard);
 
 // jsPlumbの{allowLoopback: false}はどこで指定する？
