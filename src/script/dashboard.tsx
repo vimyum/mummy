@@ -14,9 +14,11 @@ import InputIcon from 'material-ui-icons/Input';
 // 型情報なし
 let JsPlumb = require('jsplumb');
 
+import NodeTemplates from './nodeTemplates';
+
 export interface Props {
     classes?: any;
-    user?: any;
+    node?: any;
 }
 
 export interface IState {
@@ -24,72 +26,128 @@ export interface IState {
 }
 
 class Dashboard extends React.Component<any, IState> {
+    public jpInstance;
     constructor(props) {
         super();
         const {classes, ... other } = props;
         this.state = {
             users: [],
         };
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
+        this.componentDidUpdate = this.componentDidUpdate.bind(this);
+    }
+
+    componentWillMount() {
+        // JsPlumbの初期化
+        console.log('componentWillMount is called.');
+        console.log('this.jpInstance:' + this.jpInstance);
+        console.log('NodeTemplates: ' + NodeTemplates);
+    }
+
+    componentWillUnmount() {
+        console.log("componentWillUnmount is called.");
+        let connections = this.jpInstance.getConnections();
+        let newConnectionsState = [];
+        connections.forEach((con, idx) => {
+            console.log("idx:" + idx + ", con:" + con);
+            // debugger;
+            newConnectionsState.push({
+                idx: con.id,
+                sourceId: con.sourceId,
+                targetId: con.targetId,
+            });
+        });
+        this.props.updateConnectionHandler(newConnectionsState);
     }
 
     componentDidMount() {
-        JsPlumb.jsPlumb.ready(function() {
+        JsPlumb.jsPlumb.ready(() => { // すぐには実行されない(componentDidMountよりも後)
             console.log('jsPlumb is called.');
-            const instance = JsPlumb.jsPlumb.getInstance({
-                // notice the 'curviness' argument to this Bezier curve.  the curves on this page are far smoother
-                // than the curves on the first demo, which use the default curviness value.
+            this.jpInstance = JsPlumb.jsPlumb.getInstance({
                 Connector: [ "Bezier", { curviness: 50 } ],
                 DragOptions: { cursor: "pointer", zIndex: 2000 },
-                // PaintStyle: { stroke: color, strokeWidth: 2 },
                 EndpointStyle: { radius: 3, fill: 'gray' },
                 HoverPaintStyle: {stroke: "#ec9f2e" },
                 EndpointHoverStyle: {fill: "#ec9f2e" },
                 Container: "plumbContainer",
+                ConnectionOverlays: [[ "Arrow", {id: "arrow", location: 1, foldback: 1, visible:true, width: 10, length: 10}]],
             });
 
-            let nodes = document.querySelectorAll('.node');
+            this.setupJpEndpoint();
+            this.props.connections.forEach(con => {
+                    this.jpInstance.connect({
+                        source: con.sourceId,
+                        target: con.targetId,
+                        anchor: ["Left", "Right"],
+                    });
+            })
+            // debugger;
+        });
+    }
 
-            // AnchorTypeがsource or bothにのみendpointを追加
-            instance.addEndpoint(Array.from(nodes).filter((element, index) => {
-                    let anchorType = (element as HTMLElement).dataset['anchor'];
-                    return anchorType === 'source' || anchorType === 'both';
-                }), {
-                isSource: true,
-                anchor: "Right",
-            });
+    setupJpEndpoint () {
+        let nodes = document.querySelectorAll('.node');
 
-            // AnchorTypeがsource or bothにのみendpointを追加
-            instance.addEndpoint(Array.from(nodes).filter((element, index) => {
-                    let anchorType = (element as HTMLElement).dataset['anchor'];
-                    return anchorType === 'target' || anchorType === 'both';
-                }), {
-                isSource: true,
-                anchor: "Left",
-            });
-
-            instance.draggable(nodes);
+        // AnchorTypeがsource or bothにのみendpointを追加
+        this.jpInstance.addEndpoint(Array.from(nodes).filter((element, index) => {
+            let anchorType = (element as HTMLElement).dataset['anchor'];
+            return anchorType === 'source' || anchorType === 'both';
+        }), {
+            isSource: true,
+            anchor: "Right",
         });
 
+        // AnchorTypeがsource or bothにのみendpointを追加
+        this.jpInstance.addEndpoint(Array.from(nodes).filter((element, index) => {
+            let anchorType = (element as HTMLElement).dataset['anchor'];
+            return anchorType === 'target' || anchorType === 'both';
+        }), {
+            isTarget: true,
+            anchor: "Left",
+        });
+
+        this.jpInstance.draggable(nodes, {
+
+            // Options are described here:( https://github.com/jsplumb/katavorio/wiki )
+            start: () => {
+                console.log('Katavoria Drag-Start is fired.');
+            },
+            stop: (params) => {
+                console.log('Katavoria Drag-Stop is fired.');
+                console.log("ID is :" + params.el.id);
+                this.props.updateNodePositionHandler({
+                    nodeId: params.el.id,
+                    top: params.pos[1],
+                    left: params.pos[0],
+                });
+            },
+            grid:[150,150], // 効いていない
+        });
+    }
+
+    setupJpConnection() {
+        // TBD: stateからconnectionを実装
+    }
+
+    componentDidUpdate() {
+        this.setupJpEndpoint()
+        this.jpInstance.repaintEverything();
     }
 
     render() {
         let cardLists = [];
         for (let node of this.props.nodes) {
             cardLists.push(
-                <StyledUserCard user={node} key={node.id}/>
+                <StyledUserCard node={node} key={node.id}/>
             );
         }
         return <div id="plumbContainer" 
               onDrop={(ev) => {
-                  console.log('clientX: ' + ev.clientX);
-                  console.log('clientY: ' + ev.clientY);
                   console.log("onDrop is called.")
-
-                  let data = ev.dataTransfer.getData('text');
-                  console.log(data);
-
+                  let data = JSON.parse(ev.dataTransfer.getData('text'));
                   this.props.onDrop({
-                      name: "gpio",
+                      type: data.type,
                       left: ev.clientX,
                       top: ev.clientY,
                   });
@@ -104,19 +162,21 @@ class Dashboard extends React.Component<any, IState> {
     }
 }
 
-export class UserCard extends React.Component<Props, undefined> { //Propsをuserからnodeに
+export class UserCard extends React.Component<Props, undefined> {
     constructor() {
         super();
     }
     render() {
+        let nodeInfo = NodeTemplates.get(this.props.node.type);
         return <div>
-            <Paper className={"node " + this.props.classes.paper}
-            data-anchor={this.props.user.anchor}
-            style={{"position":"absolute", "top": this.props.user.top, "left": this.props.user.left}}>
-            <InputIcon />
+            <Paper 
+                id={this.props.node.id}
+                className={"node " + this.props.classes.paper}
+                data-anchor={nodeInfo.anchor}
+                style={{"position":"absolute", "top": this.props.node.top, "left": this.props.node.left}}>
+            {nodeInfo.iconElement}
             </Paper>
             </div>;
-           // {this.props.user.name}
     }
 }
 
@@ -129,3 +189,5 @@ const styleSheet = createStyleSheet('Dashboard', (theme) => ({
 
 let StyledUserCard = withStyles(styleSheet)(UserCard);
 export default withStyles(styleSheet)(Dashboard);
+
+// jsPlumbの{allowLoopback: false}はどこで指定する？

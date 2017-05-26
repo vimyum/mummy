@@ -24,11 +24,11 @@ function FloatingActionButtons(props) {
 	return (
 		<div className={classes.floatMenu}>
 		<Button fab primary className={classes.button} onClick={() => props.onClick()}>
-		<AddIcon className={classes.icons} />
+		    <AddIcon className={classes.icons} />
 		</Button>
-		<Button fab accent className={classes.button}>
-		<ModeEditIcon />
-		</Button>
+		<Button component="a" href="http://qiita.com" fab accent className={classes.button}>
+            <ModeEditIcon className={classes.icons} />
+        </Button>
 		</div>
 	);
 }

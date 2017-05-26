@@ -6,13 +6,15 @@ import Drawer from 'material-ui/Drawer';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import InboxIcon from 'material-ui-icons/Inbox';
+
 import DraftsIcon from 'material-ui-icons/Drafts';
 import StarIcon from 'material-ui-icons/Star';
 import SendIcon from 'material-ui-icons/Send';
 import MailIcon from 'material-ui-icons/Mail';
 import DeleteIcon from 'material-ui-icons/Delete';
 import ReportIcon from 'material-ui-icons/Report';
+
+import NodeTemplates from './nodeTemplates';
 
 const styleSheet = createStyleSheet('UndockedDrawer', () => ({
   list: {
@@ -81,7 +83,6 @@ class UndockedDrawer extends React.Component<any, any> {
 
         console.log("start..");
         [].forEach.call(templates, (col) => {
-            console.log("col: " + col);
             col.addEventListener('dragstart', this.handleDragStart, false);
             col.addEventListener('drop', this.handleDrop, false);
             col.addEventListener('dragend', this.handleDragEnd, false);
@@ -94,17 +95,17 @@ class UndockedDrawer extends React.Component<any, any> {
 
         let templateList = [];
         for (let template of this.props.templates) {
+            let templateInfo = NodeTemplates.get(template.type)
             templateList.push(
-                <ListItem  key={template.type}>
                 <div className={"draggable"} ref="template" draggable={true}
-                    data-node-type={template.type}
-                >
+                    data-node-type={template.type} key={template.type} >
+                <ListItem >
                     <ListItemIcon>
-                        {template.iconElement}
+                        {templateInfo.iconElement}
                     </ListItemIcon>
-                    <ListItemText primary={template.name} />
-                </div>
+                    <ListItemText primary={templateInfo.disp} />
                 </ListItem>
+                </div>
             );
         }
     
