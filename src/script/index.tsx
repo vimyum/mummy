@@ -11,7 +11,13 @@ import Dashboard from "./dashboard";
 import SideMenu from './drawer';
 import FloatingButton from './floatingButton';
 import {withStyles, createStyleSheet } from 'material-ui/styles';
+
 import InboxIcon from 'material-ui-icons/Inbox';
+import LightbulbOutline from 'material-ui-icons/LightbulbOutline';
+import { lightGreen } from 'material-ui/styles/colors';
+
+import TextField from 'material-ui/TextField';
+import NodeTemplates from './nodeTemplates';
 
 injectTapEventPlugin();
 
@@ -22,6 +28,9 @@ interface IState {
     connections?: any; // TBD きちんと定義する
     templates?: any; // TBD きちんと定義する
     nodeMaxId?: number;
+    nodeConfigIsOpen?: boolean;
+    currentAsset?: number;
+    currentNode?: number;
 }
 
 const styleSheet = createStyleSheet('App', (theme) => ({
@@ -30,7 +39,8 @@ const styleSheet = createStyleSheet('App', (theme) => ({
 		marginTop: 30,
 	},
 	appBar: {
-		backgroundColor: theme.palette.primary[500],
+		// backgroundColor: theme.palette.primary[500],
+		backgroundColor: lightGreen[700],
 		color: theme.palette.getContrastText(theme.palette.primary[500]),
 	},
 }));
@@ -57,11 +67,32 @@ class App extends React.Component<any, IState> {
                 iconElement: <InboxIcon />,
             },
             {
+                name: "I2C-LED(PL9823)", 
+                type: "pl9823",
+                icon: "icon",
+                iconElement: <LightbulbOutline />,
+            },
+            {
+                name: "LED", 
+                type: "led",
+                icon: "icon",
+                iconElement: <LightbulbOutline />,
+            },
+            {
+                name: "IR-Detect", 
+                type: "hcsr501",
+                icon: "icon",
+                iconElement: <LightbulbOutline />,
+            },
+            {
                 name: "Sche", 
                 type: "sleep",
                 iconElement: <InboxIcon />,
             },
-  ]
+            ],
+            nodeConfigIsOpen: false,
+            currentNode: 0,
+            currentAsset: 0,
         }
 
         const {
@@ -87,15 +118,24 @@ class App extends React.Component<any, IState> {
 
     private addNodeHandler = (nodeInfo) => {
         let newNodeId = this.state.nodeMaxId + 1;
+        let template = NodeTemplates.get(nodeInfo.type);
+
         this.setState({nodes : [...this.state.nodes, {
             id: this.state.nodeMaxId,
             type: nodeInfo.type,
             top: nodeInfo.top + "px",
             left: nodeInfo.left + "px",
+            conf: JSON.parse(JSON.stringify(template.config)), //なんちゃってDeepCopy
         }]});
         this.setState({nodeMaxId: newNodeId});
     }
 
+    private updateNodeConfig = (configItem) => {
+        console.log('updateNodeConfig is called with ' + JSON.stringify(configItem));
+        let node = this.state.nodes.filter((node) => node.id == this.state.currentNode)[0];
+        node.conf.filter((item) => item.name == configItem.name)[0] = configItem;
+        this.setState({ nodes : this.state.nodes });
+    }
 
     private updateNodePositionHandler = ({nodeId, top, left}) => {
         console.log("updateNodePosition is called.");
@@ -111,6 +151,23 @@ class App extends React.Component<any, IState> {
     private updateConnectionHandler = (newConnections: Array<any>) => {
         console.log("updateConnectionHandler is called.");
         this.setState({connections: newConnections});
+    }
+
+    private toggleNodeConfigHandler = () => {
+        console.log("toggleNodeConfigHandler is called");
+        this.setState({nodeConfigIsOpen: !this.state.nodeConfigIsOpen});
+    }
+
+    private openNodeConfigHandler = (e) => {
+        let nodeId = e.currentTarget.id;
+        this.setState({
+            currentNode: nodeId,
+            nodeConfigIsOpen: true,
+        });
+    }
+
+    private closeNodeConfigHandler = () => {
+        this.setState({nodeConfigIsOpen: false});
     }
 
     public render() {
@@ -131,6 +188,13 @@ class App extends React.Component<any, IState> {
                      }
                      updateNodePositionHandler={this.updateNodePositionHandler}
                      updateConnectionHandler={this.updateConnectionHandler}
+                     nodeConfigIsOpen={this.state.nodeConfigIsOpen}
+                     toggleNodeConfigHandler={this.toggleNodeConfigHandler}
+                     openNodeConfigHandler={this.openNodeConfigHandler}
+                     closeNodeConfigHandler={this.closeNodeConfigHandler}
+                     currentAsset={this.state.currentAsset}
+                     currentNode={this.state.currentNode}
+                     updateNodeConfig={this.updateNodeConfig}
                 />
                 </h1> }
             { this.state.index === 1 && <h1>Content 2</h1> }

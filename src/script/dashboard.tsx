@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
-import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Node from './nodeInstance';
+import NodeConfig from './nodeDialog'
+
 
 // 型情報なし
 let JsPlumb = require('jsplumb');
@@ -86,7 +87,6 @@ class Dashboard extends React.Component<any, any> {
         });
 
         this.jpInstance.draggable(nodes, {
-
             // Options are described here:( https://github.com/jsplumb/katavorio/wiki )
             start: () => {
                 console.log('Katavoria Drag-Start is fired.');
@@ -104,10 +104,6 @@ class Dashboard extends React.Component<any, any> {
         });
     }
 
-    setupJpConnection() {
-        // TBD: stateからconnectionを実装
-    }
-
     componentDidUpdate() {
         this.setupJpEndpoint()
         this.jpInstance.repaintEverything();
@@ -117,7 +113,11 @@ class Dashboard extends React.Component<any, any> {
         let nodes = [];
         for (let node of this.props.nodes) {
             nodes.push(
-                <Node node={node} key={node.id}/>
+                <Node 
+                    node={node} 
+                    key={node.id} 
+                    onClick={(e) => { this.props.openNodeConfigHandler(e) }}
+                />
             );
         }
         return <div id="plumbContainer" 
@@ -133,9 +133,17 @@ class Dashboard extends React.Component<any, any> {
               onDragOver={(ev) => {
                   ev.preventDefault();
               }}
-              style={{"height":"600px", "width":"800px"}}
+              style={{"height":"600px", "width":"800px", "backgroundImage": "url('./grid.jpg')"}}
             >
             {nodes}
+            <NodeConfig 
+                open={this.props.nodeConfigIsOpen} 
+                node={
+                    this.props.nodes.filter((node) => node.id == this.props.currentNode)[0]
+                }
+                onClose={this.props.closeNodeConfigHandler}
+                updateNodeConfig={this.props.updateNodeConfig}
+            />
             </div>;
     }
 }
@@ -147,5 +155,4 @@ const styleSheet = createStyleSheet('Dashboard', (theme) => ({
 }));
 
 export default withStyles(styleSheet)(Dashboard);
-
 // jsPlumbの{allowLoopback: false}はどこで指定する？
