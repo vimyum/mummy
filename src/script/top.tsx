@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import createPalette from 'material-ui/styles/palette';
 
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -11,11 +12,17 @@ import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import {withStyles, createStyleSheet } from 'material-ui/styles';
 
-import { lightGreen } from 'material-ui/styles/colors';
+import { lightGreen, teal } from 'material-ui/styles/colors';
 
 import Grid from 'material-ui/Grid';
 
 injectTapEventPlugin();
+
+const theme = createMuiTheme({
+  palette: createPalette({
+    primary: teal, 
+  }),
+});
 
 const styleSheet = createStyleSheet('ButtonAppBar', {
     root: {
@@ -84,7 +91,7 @@ class App extends React.Component<any, any> {
 
 const StyledApp = withStyles(styleSheet)(App);
 
-ReactDOM.render(<MuiThemeProvider key="mtProvider" >
+ReactDOM.render(<MuiThemeProvider key="mtProvider" theme={theme}>
                 <StyledApp></StyledApp></MuiThemeProvider>,
                 document.querySelector('#app'));
 

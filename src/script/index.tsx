@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+
 import createPalette from 'material-ui/styles/palette';
 
 import {FlatButton, Tabs, Tab} from 'material-ui';
@@ -31,7 +32,17 @@ interface IState {
     nodeConfigIsOpen?: boolean;
     currentAsset?: number;
     currentNode?: number;
+    needRefresh?: boolean;
 }
+
+const theme = createMuiTheme({
+  palette: createPalette({
+    primary: {
+		...lightGreen, 
+        500: '#689F38',
+    },
+  }),
+});
 
 const styleSheet = createStyleSheet('App', (theme) => ({
 	root: {
@@ -93,6 +104,7 @@ class App extends React.Component<any, IState> {
             nodeConfigIsOpen: false,
             currentNode: 0,
             currentAsset: 0,
+            needRefresh: false,
         }
 
         const {
@@ -114,6 +126,25 @@ class App extends React.Component<any, IState> {
     private toggleSideMenuHandler = () => {
         console.log("openSideMenuHandler is called");
         this.setState({sideMenuIsOpen: !this.state.sideMenuIsOpen});
+    }
+
+    // jsPlumbにより描写されたコネクタを削除するためノード削除時は
+    // Dashboardコンポーネントを一度アンマウントし、再度マウントする
+    private refreshFinished = () => {
+        this.setState({needRefresh: false});
+    }
+
+    private removeCurrentNodeHandler = () => {
+        console.log("removeCurrentNodeHandler is called");
+        let cons = this.state.connections;
+        this.setState({
+            nodes: this.state.nodes.filter((node) => (node.id != this.state.currentNode)),
+            connections: this.state.connections.filter((con) => {
+                console.log(`currentNode:${this.state.currentNode}, sourceId:${con.sourceId}, targetId:${con.targetId}`);
+                return (con.sourceId != this.state.currentNode) && (con.targetId != this.state.currentNode);
+            }),
+            needRefresh: true,
+        });
     }
 
     private addNodeHandler = (nodeInfo) => {
@@ -159,11 +190,16 @@ class App extends React.Component<any, IState> {
     }
 
     private openNodeConfigHandler = (e) => {
+        this.setState({
+            nodeConfigIsOpen: true,
+        });
+    }
+
+    private setCurrentNodeHandler = (e) => {
         let nodeId = e.currentTarget.id;
         this.setState({
             currentNode: nodeId,
-            nodeConfigIsOpen: true,
-        });
+        })
     }
 
     private closeNodeConfigHandler = () => {
@@ -177,7 +213,7 @@ class App extends React.Component<any, IState> {
             <Tab label="Flow" />
             <Tab label="Visualize" />
             </Tabs>
-            { this.state.index === 0 && 
+            { this.state.index === 0 && this.state.needRefresh === false &&
                 <h1>
                 <Dashboard
                      nodes={this.state.nodes} 
@@ -191,22 +227,27 @@ class App extends React.Component<any, IState> {
                      nodeConfigIsOpen={this.state.nodeConfigIsOpen}
                      toggleNodeConfigHandler={this.toggleNodeConfigHandler}
                      openNodeConfigHandler={this.openNodeConfigHandler}
+                     setCurrentNodeHandler={this.setCurrentNodeHandler}
                      closeNodeConfigHandler={this.closeNodeConfigHandler}
                      currentAsset={this.state.currentAsset}
                      currentNode={this.state.currentNode}
                      updateNodeConfig={this.updateNodeConfig}
+                     refreshFinished={this.refreshFinished}
                 />
                 </h1> }
             { this.state.index === 1 && <h1>Content 2</h1> }
             { this.state.index === 2 && <h1>Content 3</h1> }
             <SideMenu isOpen={this.state.sideMenuIsOpen} templates={this.state.templates} ></SideMenu>
-            <FloatingButton onClick={() => this.toggleSideMenuHandler()}/>
+            <FloatingButton 
+                onClick={() => this.toggleSideMenuHandler()}
+                removeCurrentNode={() => this.removeCurrentNodeHandler()}
+                />
             </div>
     }
 }
 
 const StyledApp = withStyles(styleSheet)(App);
 
-ReactDOM.render(<MuiThemeProvider key="mtProvider" >
+ReactDOM.render(<MuiThemeProvider key="mtProvider" theme={theme}>
     <StyledApp>{'App'}</StyledApp></MuiThemeProvider>,
     document.querySelector('#app'));

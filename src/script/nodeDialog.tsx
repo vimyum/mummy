@@ -6,8 +6,6 @@ import Button from 'material-ui/Button';
 import NodeTemplates from './nodeTemplates';
 import TextField from 'material-ui/TextField';
 
-import IconButton from 'material-ui/IconButton';
-import DeleteIcon from 'material-ui-icons/Delete';
 
 class NodeConfig extends React.Component<any, any> {
 
@@ -19,12 +17,6 @@ class NodeConfig extends React.Component<any, any> {
     let elem = ReactDOM.findDOMNode(this.refs.dialogContent);
     this.props.onClose();
   };
-
-  private removeNode = () => {
-      /* TBD */
-      /* remove current node */
-      /* unset currentNode status */
-  }
 
   render() {
     const {
@@ -48,9 +40,6 @@ class NodeConfig extends React.Component<any, any> {
             {template.configElement(this.props.node, this.props.updateNodeConfig)}
         </DialogContent>
         <DialogActions>
-            <IconButton onClick={this.removeNode}>
-                <DeleteIcon />
-            </IconButton>
           <Button onClick={this.handleCancel} primary>Cancel</Button>
           <Button onClick={this.handleOk} primary>Ok</Button>
         </DialogActions>

@@ -9,6 +9,7 @@ export interface Props {
     classes?: any;
     node?: any;
     onClick?: any;
+    onSelect?: any;
 }
 
 export class UserCard extends React.Component<Props, undefined> {
@@ -23,7 +24,15 @@ export class UserCard extends React.Component<Props, undefined> {
                 className={"node " + this.props.classes.paper}
                 data-anchor={nodeInfo.anchor}
                 style={{"position":"absolute", "top": this.props.node.top, "left": this.props.node.left}}
-                onDoubleClick={(e) => { this.props.onClick(e); }}
+
+                onClick={(e) => {
+                    console.log('single click is detected.');
+                    this.props.onSelect(e);
+                }}
+
+                onDoubleClick={(e) => {
+                    this.props.onClick(e);
+                }}
             >
             {nodeInfo.iconElement}
             </Paper>

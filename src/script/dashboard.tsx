@@ -26,6 +26,7 @@ class Dashboard extends React.Component<any, any> {
 
     componentWillUnmount() {
         console.log("componentWillUnmount is called.");
+
         let connections = this.jpInstance.getConnections();
         let newConnectionsState = [];
         connections.forEach((con, idx) => {
@@ -38,6 +39,7 @@ class Dashboard extends React.Component<any, any> {
             });
         });
         this.props.updateConnectionHandler(newConnectionsState);
+        this.props.refreshFinished();
     }
 
     componentDidMount() {
@@ -116,7 +118,8 @@ class Dashboard extends React.Component<any, any> {
                 <Node 
                     node={node} 
                     key={node.id} 
-                    onClick={(e) => { this.props.openNodeConfigHandler(e) }}
+                    onClick={(e) => { this.props.openNodeConfigHandler(e)}}
+                    onSelect={ (e) => { this.props.setCurrentNodeHandler(e)}}
                 />
             );
         }
