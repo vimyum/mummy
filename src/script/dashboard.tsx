@@ -20,25 +20,12 @@ class Dashboard extends React.Component<any, any> {
     }
 
     componentWillMount() {
-        // JsPlumbの初期化
         console.log('componentWillMount is called.');
     }
 
     componentWillUnmount() {
         console.log("componentWillUnmount is called.");
-
-        let connections = this.jpInstance.getConnections();
-        let newConnectionsState = [];
-        connections.forEach((con, idx) => {
-            console.log("idx:" + idx + ", con:" + con);
-            // debugger;
-            newConnectionsState.push({
-                idx: con.id,
-                sourceId: con.sourceId,
-                targetId: con.targetId,
-            });
-        });
-        this.props.updateConnectionHandler(newConnectionsState);
+        this.props.updateConnectionHandler(this.getConnections());
         this.props.refreshFinished();
     }
 
@@ -52,7 +39,14 @@ class Dashboard extends React.Component<any, any> {
                 HoverPaintStyle: {stroke: "#ec9f2e" },
                 EndpointHoverStyle: {fill: "#ec9f2e" },
                 Container: "plumbContainer",
-                ConnectionOverlays: [[ "Arrow", {id: "arrow", location: 1, foldback: 1, visible:true, width: 10, length: 10}]],
+                ConnectionOverlays: [[ "Arrow", {
+                    id: "arrow",
+                    location: 1,
+                    foldback: 1,
+                    visible:true,
+                    width: 10,
+                    length: 10
+                }]],
             });
 
             this.setupJpEndpoint();
@@ -64,10 +58,30 @@ class Dashboard extends React.Component<any, any> {
                     });
             })
             // debugger;
+            this.props.refreshFuncs.push(this.getConnections);
         });
     }
 
-    setupJpEndpoint () {
+    public static _internalFunc = () => {
+        console.log("this is a static internal func");
+    }
+
+    /* 親コンポーネントからもビルド前に呼ばれる*/
+    private getConnections = () => {
+        let connections = this.jpInstance.getConnections();
+        let newConnectionsState = [];
+        connections.forEach((con, idx) => {
+            console.log("idx:" + idx + ", con:" + con);
+            newConnectionsState.push({
+                idx: con.id,
+                sourceId: con.sourceId,
+                targetId: con.targetId,
+            });
+        });
+        return newConnectionsState; 
+    }
+
+    private setupJpEndpoint () {
         let nodes = document.querySelectorAll('.node');
 
         // AnchorTypeがsource or bothにのみendpointを追加

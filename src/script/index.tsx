@@ -57,6 +57,7 @@ const styleSheet = createStyleSheet('App', (theme) => ({
 }));
 
 class App extends React.Component<any, IState> {
+    private refreshFuncs = [];
     constructor(props) {
         super();
         this.state = {
@@ -116,6 +117,39 @@ class App extends React.Component<any, IState> {
         } = props;
 
         console.log("App constructor is called.");
+    }
+    private buildFlow = () => {
+        // jsPlumbによって描画されたコネクトを消して
+       
+        // assetによって叩くAPIを変える :TBD
+        let build = {
+            url: "http://localhost:3001/api/v1/espr/generate",
+            body: JSON.stringify({
+                wifi: {
+                    ssid: "SSID",  // TBD: エディタから入力可能にする
+                    pass: "PASS",  // TBD: エディタから入力可能にする
+                },
+                connections: this.refreshFuncs[0](),
+                nodes: this.state.nodes,
+            }),
+        };
+
+        // 送信
+        return fetch(build.url,{
+                      method: 'post',
+                      mode: 'cors',
+                      headers: {
+                          'content-type': 'application/json'
+                      },
+                      body: build.body,
+        }).then(resp => {
+            console.log(`response: ${resp}`);
+           
+            // 応答をstateに登録
+       
+            // 応答ダイアログをopen
+
+        });
     }
 
     private handleTabChange = (event, index) => {
@@ -215,7 +249,7 @@ class App extends React.Component<any, IState> {
             </Tabs>
             { this.state.index === 0 && this.state.needRefresh === false &&
                 <h1>
-                <Dashboard
+                <Dashboard ref='dashboard'
                      nodes={this.state.nodes} 
                      connections={this.state.connections}
                      onDrop={(nodeInfo) => {
@@ -233,6 +267,7 @@ class App extends React.Component<any, IState> {
                      currentNode={this.state.currentNode}
                      updateNodeConfig={this.updateNodeConfig}
                      refreshFinished={this.refreshFinished}
+                     refreshFuncs={this.refreshFuncs}
                 />
                 </h1> }
             { this.state.index === 1 && <h1>Content 2</h1> }
@@ -241,6 +276,7 @@ class App extends React.Component<any, IState> {
             <FloatingButton 
                 onClick={() => this.toggleSideMenuHandler()}
                 removeCurrentNode={() => this.removeCurrentNodeHandler()}
+                buildFlow={() => this.buildFlow()}
                 />
             </div>
     }
