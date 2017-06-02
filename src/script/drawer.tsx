@@ -17,6 +17,10 @@ import ReportIcon from 'material-ui-icons/Report';
 import NodeTemplates from './nodeTemplates';
 
 const styleSheet = createStyleSheet('UndockedDrawer', () => ({
+  drawer: {
+      height: 'calc(100% - 64px)',
+      top: '48px',
+  },
   list: {
     width: 250,
     flex: 'initial',
@@ -124,11 +128,12 @@ class UndockedDrawer extends React.Component<any, any> {
         return (
             <div>
             <Drawer
+                paperClassName={classes.drawer}
                 docked={true}
                 open={this.props.isOpen}
                 onRequestClose={this.handleLeftClose}
             >
-            {sideList}
+                {sideList}
             </Drawer>
             </div>
         );

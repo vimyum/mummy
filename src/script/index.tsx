@@ -9,8 +9,6 @@ import createPalette from 'material-ui/styles/palette';
 import {FlatButton, Tabs, Tab} from 'material-ui';
 
 import Dashboard from "./dashboard";
-import SideMenu from './drawer';
-import FloatingButton from './floatingButton';
 import {withStyles, createStyleSheet } from 'material-ui/styles';
 
 import InboxIcon from 'material-ui-icons/Inbox';
@@ -268,16 +266,16 @@ class App extends React.Component<any, IState> {
                      updateNodeConfig={this.updateNodeConfig}
                      refreshFinished={this.refreshFinished}
                      refreshFuncs={this.refreshFuncs}
+
+                     isOpen={this.state.sideMenuIsOpen}
+                     templates={this.state.templates} 
+                     onClick={() => this.toggleSideMenuHandler()}
+                     removeCurrentNode={() => this.removeCurrentNodeHandler()}
+                     buildFlow={() => this.buildFlow()}
                 />
                 </h1> }
             { this.state.index === 1 && <h1>Content 2</h1> }
             { this.state.index === 2 && <h1>Content 3</h1> }
-            <SideMenu isOpen={this.state.sideMenuIsOpen} templates={this.state.templates} ></SideMenu>
-            <FloatingButton 
-                onClick={() => this.toggleSideMenuHandler()}
-                removeCurrentNode={() => this.removeCurrentNodeHandler()}
-                buildFlow={() => this.buildFlow()}
-                />
             </div>
     }
 }

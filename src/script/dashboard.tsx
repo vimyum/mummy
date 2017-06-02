@@ -4,6 +4,8 @@ import { withStyles, createStyleSheet } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import Node from './nodeInstance';
 import NodeConfig from './nodeDialog'
+import FloatingButton from './floatingButton';
+import SideMenu from './drawer';
 
 
 // 型情報なし
@@ -161,6 +163,13 @@ class Dashboard extends React.Component<any, any> {
                 onClose={this.props.closeNodeConfigHandler}
                 updateNodeConfig={this.props.updateNodeConfig}
             />
+
+            <SideMenu isOpen={this.props.isOpen} templates={this.props.templates}/>
+            <FloatingButton 
+                onClick={this.props.onClick}
+                removeCurrentNode={this.props.removeCurrentNode}
+                buildFlow={this.props.buildFlow}
+                />
             </div>;
     }
 }
