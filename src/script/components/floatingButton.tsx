@@ -26,10 +26,10 @@ function FloatingActionButtons(props) {
 	const classes = props.classes;
 	return (
 		<div className={classes.floatMenu}>
-		<Button fab primary className={classes.button} onClick={() => props.onClick()}>
+		<Button fab primary className={classes.button} onClick={props.onClick}>
 		    <AddIcon className={classes.icons} />
 		</Button>
-		<Button component="a" fab primary className={classes.button} onClick={() => props.removeCurrentNode()}>
+		<Button component="a" fab primary className={classes.button} onClick={props.removeNode}>
             <DeleteIcon />
         </Button>
 		<Button component="a" onClick={() => props.buildFlow()} fab primary className={classes.button}>

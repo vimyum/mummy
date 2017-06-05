@@ -3,16 +3,9 @@ import * as ReactDOM from 'react-dom';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
 
-import NodeTemplates from './nodeTemplates';
+import NodeTemplates from '../nodeTemplates';
 
-export interface Props {
-    classes?: any;
-    node?: any;
-    onClick?: any;
-    onSelect?: any;
-}
-
-export class UserCard extends React.Component<Props, undefined> {
+export class NodeInstance extends React.Component<any, undefined> {
     constructor() {
         super();
     }
@@ -25,14 +18,8 @@ export class UserCard extends React.Component<Props, undefined> {
                 data-anchor={nodeInfo.anchor}
                 style={{"position":"absolute", "top": this.props.node.top, "left": this.props.node.left}}
 
-                onClick={(e) => {
-                    console.log('single click is detected.');
-                    this.props.onSelect(e);
-                }}
-
-                onDoubleClick={(e) => {
-                    this.props.onClick(e);
-                }}
+                onClick={this.props.onNodeSelect}
+                onDoubleClick={this.props.openNodeConfig}
             >
             {nodeInfo.iconElement}
             </Paper>
@@ -49,4 +36,4 @@ const styleSheet = createStyleSheet('Dashboard', (theme) => ({
     },
 }));
 
-export default withStyles(styleSheet)(UserCard);
+export default withStyles(styleSheet)(NodeInstance);

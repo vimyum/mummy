@@ -14,7 +14,7 @@ import MailIcon from 'material-ui-icons/Mail';
 import DeleteIcon from 'material-ui-icons/Delete';
 import ReportIcon from 'material-ui-icons/Report';
 
-import NodeTemplates from './nodeTemplates';
+import NodeTemplates from '../nodeTemplates';
 
 const styleSheet = createStyleSheet('UndockedDrawer', () => ({
   drawer: {
@@ -127,6 +127,7 @@ class UndockedDrawer extends React.Component<any, any> {
 
         return (
             <div>
+            <h1>this is a drawer</h1>
             <Drawer
                 paperClassName={classes.drawer}
                 docked={true}

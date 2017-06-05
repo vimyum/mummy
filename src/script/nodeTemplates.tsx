@@ -8,7 +8,7 @@ import LightbulbOutline from 'material-ui-icons/LightbulbOutline';
 import Accessibility from 'material-ui-icons/Accessibility';
 
 import {LabelSwitch} from 'material-ui/Switch';
-import GpioIn from './GpioIn';
+import ConfigGeneric from './containers/nodes/configGeneric';
 
 interface Node {
     type: string;
@@ -29,9 +29,9 @@ class NodeTemplate {
             config: [
                 {
                     name: "pinId",
-                    label: "GPIO#",
+                    label: "hello#",
                     type: "number",
-                    value: "",
+                    value: "3",
                     desc: "no description",
                 },
                 {
@@ -50,7 +50,7 @@ class NodeTemplate {
                 },
             ],
             iconElement: <InputIcon />,
-            configElement: (node, handler) => <GpioIn node={node} onChange={handler}/>,
+            configElement: (node, handler) => <ConfigGeneric node={node} onChange={handler}/>,
         },
         {
             type:   "gpio_out",

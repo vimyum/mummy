@@ -2,10 +2,11 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { withStyles, createStyleSheet } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
-import Node from './nodeInstance';
-import NodeConfig from './nodeDialog'
-import FloatingButton from './floatingButton';
-import SideMenu from './drawer';
+
+import NodeConfig from '../containers/nodeConfig'
+import Node from '../containers/nodeInstance';
+import FloatingButton from '../containers/floatingButton';
+import SideMenu from '../containers/sideMenu';
 
 
 // 型情報なし
@@ -27,7 +28,7 @@ class Dashboard extends React.Component<any, any> {
 
     componentWillUnmount() {
         console.log("componentWillUnmount is called.");
-        this.props.updateConnectionHandler(this.getConnections());
+        this.props.updateConnections(this.getConnections());
         this.props.refreshFinished();
     }
 
@@ -112,7 +113,8 @@ class Dashboard extends React.Component<any, any> {
             stop: (params) => {
                 console.log('Katavoria Drag-Stop is fired.');
                 console.log("ID is :" + params.el.id);
-                this.props.updateNodePositionHandler({
+
+                this.props.updateNodePosition({
                     nodeId: params.el.id,
                     top: params.pos[1],
                     left: params.pos[0],
@@ -128,6 +130,7 @@ class Dashboard extends React.Component<any, any> {
     }
 
     render() {
+        console.log("dashboard props:" + JSON.stringify(this.props, null, ' '));
         let nodes = [];
         for (let node of this.props.nodes) {
             nodes.push(
@@ -139,10 +142,12 @@ class Dashboard extends React.Component<any, any> {
                 />
             );
         }
+
         return <div id="plumbContainer" 
               onDrop={(ev) => {
                   console.log("onDrop is called.")
                   let data = JSON.parse(ev.dataTransfer.getData('text'));
+
                   this.props.onDrop({
                       type: data.type,
                       left: ev.clientX,
@@ -155,25 +160,23 @@ class Dashboard extends React.Component<any, any> {
               style={{"height":"600px", "width":"800px", "backgroundImage": "url('./grid.jpg')"}}
             >
             {nodes}
-            <NodeConfig 
-                open={this.props.nodeConfigIsOpen} 
-                node={
-                    this.props.nodes.filter((node) => node.id == this.props.currentNode)[0]
-                }
-                onClose={this.props.closeNodeConfigHandler}
-                updateNodeConfig={this.props.updateNodeConfig}
-            />
-
-            <SideMenu isOpen={this.props.isOpen} templates={this.props.templates}/>
-            <FloatingButton 
-                onClick={this.props.onClick}
-                removeCurrentNode={this.props.removeCurrentNode}
-                buildFlow={this.props.buildFlow}
+            <div>
+                <SideMenu isOpen={this.props.sideMenuIsOpen} templates={this.props.templates}/>
+                <FloatingButton 
+                    onClick={this.props.onClick}
+                    removeCurrentNode={this.props.removeCurrentNode}
+                    buildFlow={this.props.buildFlow}
                 />
+            </div>
+            <NodeConfig />
             </div>;
     }
 }
 
+                // node={
+                  //   this.props.nodes.filter((node) => node.id == this.props.currentNode)[0]
+                // }
+               //  updateNodeConfig={this.props.updateNodeConfig}
 const styleSheet = createStyleSheet('Dashboard', (theme) => ({
     paper: {
         textAlign: 'center',
@@ -181,4 +184,3 @@ const styleSheet = createStyleSheet('Dashboard', (theme) => ({
 }));
 
 export default withStyles(styleSheet)(Dashboard);
-// jsPlumbの{allowLoopback: false}はどこで指定する？
