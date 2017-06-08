@@ -27,6 +27,8 @@ const initialState = {
 	needRefresh: false,
     isNeedConnectionUpdate: false,
     refreshFuncs: [],
+    buildResultIsOpen: false,
+    buildResultMessage: 'unknown',
 }
 
 export default function dashboard(state = initialState, action) {
@@ -119,6 +121,12 @@ export default function dashboard(state = initialState, action) {
         return {
             ...state,
             isNeedConnectionUpdate: action.value,
+        };
+    case 'buildResultIsOpen':
+        return {
+            ...state,
+            buildResultIsOpen: action.value,
+            buildResultMessage: action.message,
         };
     default:
       console.log('default dashboard reducer is called.');

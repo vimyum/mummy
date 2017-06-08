@@ -7,7 +7,7 @@ import NodeConfig from '../containers/nodeConfig'
 import Node from '../containers/nodeInstance';
 import FloatingButton from '../containers/floatingButton';
 import SideMenu from '../containers/sideMenu';
-
+import SweetAlert from './sweetAlert';
 
 // 型情報なし
 let JsPlumb = require('jsplumb');
@@ -70,7 +70,6 @@ class Dashboard extends React.Component<any, any> {
 
         // ビルドが必要かどうか TODO: props名を変える
         if (newProps.isNeedConnectionUpdate) {
-            debugger;
             this.props.needConnectionUpdate(false);
             let connections = this.getConnections()
             this.props.updateConnections(connections);
@@ -179,6 +178,15 @@ class Dashboard extends React.Component<any, any> {
                     removeCurrentNode={this.props.removeCurrentNode}
                     buildFlow={this.props.buildFlow}
                 />
+
+            <SweetAlert
+                isOpen={this.props.buildResultIsOpen}
+                text={this.props.buildResultMessage} 
+                type="success"
+                title="HTML <small>Title</small>!"
+                html={true}
+                callback={()=>{this.props.dispatch({type: 'buildResultIsOpen', value: false});}}
+            />
             </div>
             <NodeConfig />
             </div>;
@@ -192,3 +200,5 @@ const styleSheet = createStyleSheet('Dashboard', (theme) => ({
 }));
 
 export default withStyles(styleSheet)(Dashboard);
+
+// callback={() => {/*this.setState({isBuildResultOpen: false});*/}} />

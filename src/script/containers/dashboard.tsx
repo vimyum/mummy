@@ -9,7 +9,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    handleClick: () => { },
+    dispatch: (action) => dispatch(action),
 
     refreshFinished: () => dispatch({type: "needRefresh", value: false }),
 
@@ -43,7 +43,6 @@ function mapDispatchToProps(dispatch) {
                 nodes: nodes,
             }),
         };
-        debugger;
         // Now loadingをdispatch
         // TBD
 
@@ -55,9 +54,11 @@ function mapDispatchToProps(dispatch) {
             },
             body: build.body,
         }).then(resp => {
-            console.log(`response: ${resp}`);
+            return resp.json(); // or resp.text()
+        }).then(json => {
+            console.log(`response: ${json.status}, ${JSON.stringify(json)}`);
 
-            // 応答ダイアログopenをdispatch
+            dispatch({type: 'buildResultIsOpen', value: true, message: json.code});
         });
     },
   }
