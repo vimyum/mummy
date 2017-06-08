@@ -65,6 +65,19 @@ class Dashboard extends React.Component<any, any> {
         });
     }
 
+    componentWillReceiveProps(newProps) {
+        console.log("newProps is called");
+
+        // ビルドが必要かどうか TODO: props名を変える
+        if (newProps.isNeedConnectionUpdate) {
+            debugger;
+            this.props.needConnectionUpdate(false);
+            let connections = this.getConnections()
+            this.props.updateConnections(connections);
+            this.props.buildFlow(this.props.nodes, connections);
+        }
+    }
+
     public static _internalFunc = () => {
         console.log("this is a static internal func");
     }
@@ -130,7 +143,6 @@ class Dashboard extends React.Component<any, any> {
     }
 
     render() {
-        console.log("dashboard props:" + JSON.stringify(this.props, null, ' '));
         let nodes = [];
         for (let node of this.props.nodes) {
             nodes.push(
@@ -173,10 +185,6 @@ class Dashboard extends React.Component<any, any> {
     }
 }
 
-                // node={
-                  //   this.props.nodes.filter((node) => node.id == this.props.currentNode)[0]
-                // }
-               //  updateNodeConfig={this.props.updateNodeConfig}
 const styleSheet = createStyleSheet('Dashboard', (theme) => ({
     paper: {
         textAlign: 'center',

@@ -22,27 +22,25 @@ const styleSheet = createStyleSheet('FloatingActionButtons', (theme) => ({
     }
 }));
 
-function FloatingActionButtons(props) {
-	const classes = props.classes;
-	return (
-		<div className={classes.floatMenu}>
-		<Button fab primary className={classes.button} onClick={props.onClick}>
-		    <AddIcon className={classes.icons} />
-		</Button>
-		<Button component="a" fab primary className={classes.button} onClick={props.removeNode}>
-            <DeleteIcon />
-        </Button>
-		<Button component="a" onClick={() => props.buildFlow()} fab primary className={classes.button}>
-            <BuildIcon className={classes.icons} />
-        </Button>
-		</div>
-	);
-}
+class FloatingActionButtons extends React.Component<any, any> {
 
-FloatingActionButtons.prototype.propTypes = {
-	classes: PropTypes.object.isRequired,
-	openSideMenuHandler: PropTypes.func.isRequired,
-};
+    render() {
+        const classes = this.props.classes;
+        return (
+            <div className={classes.floatMenu}>
+            <Button fab primary className={classes.button} onClick={this.props.onClick}>
+            <AddIcon className={classes.icons} />
+            </Button>
+            <Button component="a" fab primary className={classes.button} onClick={this.props.removeNode}>
+            <DeleteIcon />
+            </Button>
+            <Button component="a" onClick={this.props.buildFlow} fab primary className={classes.button}>
+            <BuildIcon className={classes.icons} />
+            </Button>
+            </div>
+        );
+    }
+}
 
 export default withStyles(styleSheet)(FloatingActionButtons);
 

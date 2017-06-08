@@ -25,6 +25,7 @@ const initialState = {
 	currentNode: 0,
 	currentAsset: 0,
 	needRefresh: false,
+    isNeedConnectionUpdate: false,
     refreshFuncs: [],
 }
 
@@ -113,6 +114,11 @@ export default function dashboard(state = initialState, action) {
         return { 
             ...state,
             needRefresh: action.value,
+        };
+    case 'needConnectionUpdate':
+        return {
+            ...state,
+            isNeedConnectionUpdate: action.value,
         };
     default:
       console.log('default dashboard reducer is called.');

@@ -67,37 +67,6 @@ class App extends React.Component<any, IState> {
         console.log("App constructor is called.");
     }
 
-    private buildFlow = () => {
-        // assetによって叩くAPIを変える :TBD
-        let build = {
-            url: "http://localhost:3001/api/v1/espr/generate",
-            body: JSON.stringify({
-                wifi: {
-                    ssid: "SSID",  // TBD: エディタから入力可能にする
-                    pass: "PASS",  // TBD: エディタから入力可能にする
-                },
-                connections: this.refreshFuncs[0](),
-                nodes: this.state.nodes,
-            }),
-        };
-
-        // 送信
-        return fetch(build.url,{
-                      method: 'post',
-                      mode: 'cors',
-                      headers: {
-                          'content-type': 'application/json'
-                      },
-                      body: build.body,
-        }).then(resp => {
-            console.log(`response: ${resp}`);
-           
-            // 応答をstateに登録
-       
-            // 応答ダイアログをopen
-
-        });
-    }
 
     public render() {
         console.log("this.props:" + JSON.stringify(this.props, null, '  '));
