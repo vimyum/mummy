@@ -5,6 +5,8 @@ module.exports = {
 	entry: {
         "app": "./src/script/index.tsx",
         "top": "./src/script/top.tsx",
+        "iphone": "./src/iphone/App.tsx",
+        "chart": "./src/iphone/Chart.tsx",
     },
 	output: {
         path: path.join(__dirname, "./dist"),
