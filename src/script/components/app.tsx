@@ -63,10 +63,8 @@ class App extends React.Component<any, IState> {
             variant,
             ...other
         } = props;
-
         console.log("App constructor is called.");
     }
-
 
     public render() {
         console.log("this.props:" + JSON.stringify(this.props, null, '  '));
