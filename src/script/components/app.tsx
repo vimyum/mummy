@@ -17,6 +17,7 @@ import reducer from '../rootReducer';
 
 import TabMenu from '../containers/tabMenu';
 import Dashboard from '../containers/dashboard';
+import Assets from '../containers/assets';
 
 const theme = createMuiTheme({
   palette: createPalette({
@@ -26,17 +27,6 @@ const theme = createMuiTheme({
     },
   }),
 });
-
-const styleSheet = createStyleSheet('App', (theme) => ({
-	root: {
-		flexGrow: 1,
-		marginTop: 30,
-	},
-	appBar: {
-		backgroundColor: lightGreen[700],
-		color: theme.palette.getContrastText(theme.palette.primary[500]),
-	},
-}));
 
 interface IState {
     index?: number;
@@ -68,14 +58,20 @@ class App extends React.Component<any, IState> {
 
     public render() {
         console.log("this.props:" + JSON.stringify(this.props, null, '  '));
-        return  <MuiThemeProvider theme={theme} key="mtProvider">
+        return  (<MuiThemeProvider theme={theme} key="mtProvider">
                     <div>
                     <TabMenu />
+                    { this.props.tabIndex === 2 &&
+                        <h1>dashboards</h1>
+                    }
                     { this.props.tabIndex === 1  && this.props.needRefresh === false &&
                         <Dashboard ref='dashboard' />
                     }
+                    { this.props.tabIndex === 0 &&
+                        <Assets />
+                    }
                     </div>
-               </MuiThemeProvider>;
+               </MuiThemeProvider>);
     }
 }
 

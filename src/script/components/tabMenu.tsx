@@ -14,9 +14,9 @@ const styleSheet = createStyleSheet('App', (theme) => ({
 
 function TabMenu(props) {
     return <Tabs className={props.classes.appBar} index={props.tabIndex} onChange={props.handleClick}>
-        <Tab label="Assets" />
-        <Tab label="Flow" />
-        <Tab label="Visualize" />
+        <Tab label="Asset-Shadow" />
+        <Tab label="Flow-Editor" />
+        <Tab label="Dashboard" />
     </Tabs>;
 }
 

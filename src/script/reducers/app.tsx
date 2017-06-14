@@ -1,8 +1,5 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-
 const initialState = {
-    tabIndex: 1,
+    tabIndex: 0,
 }
 
 export default function dashboard(state = initialState, action) {

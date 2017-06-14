@@ -6,7 +6,6 @@ import {Tabs, Tab} from 'material-ui';
 import {withStyles, createStyleSheet } from 'material-ui/styles';
 
 import { lightGreen } from 'material-ui/styles/colors';
-// import NodeTemplates from './nodeTemplates';
 
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
