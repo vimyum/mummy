@@ -6,7 +6,7 @@ const initialState = {
         name: "my iPhone",
         dispId: "123456", // 製造番号相当
         place: "description",
-        image: "",
+        img: "url(./assets/asset_espr.jpg)",
         desc: "this is a iPhone",
         locale: {
             name: 'Japan',

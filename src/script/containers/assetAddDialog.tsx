@@ -30,7 +30,7 @@ function mapDispatchToProps(dispatch) {
               view: {x: 0, y: 0, w: 3, h: 2},
               name: template.name + ' New!',
               dispId: "123456",
-              image: template.img,
+              img: template.img,
               desc: "describe this device here.",
               locale: {
                   name: 'Japan',

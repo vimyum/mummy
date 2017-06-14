@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as  ReactGridLayout from 'react-grid-layout';
 import {Responsive, WidthProvider} from 'react-grid-layout';
+import TextField from 'material-ui/TextField';
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 import { withStyles, createStyleSheet } from 'material-ui/styles';
@@ -52,10 +54,20 @@ class Assets extends React.Component<any, any> {
             console.log(`item will be placed in x:${x}, y:${y}`);
             
             assets.push(
-                <div key={asset.id} data-grid={{x: x, y: y, w: 2, h: 4}}>
-                    <Paper style={{width:"100%", height:"100%"}} 
+                <div key={asset.id} data-grid={{x: x, y: y, w: 2, h: 8}}>
+                    <Paper style={{
+                        width:"100%", height:"100%", } 
                         className={this.props.classes.paper}>
-                         {asset.name}
+                        <div style={{padding: "20px 20px 20px 20px"}}>
+
+						<TextField id="name" label="Name" value={asset.name} />
+
+                        <div style={{
+                            width: "100%", height: "100px", 
+                            backgroundImage: asset.img,
+                            backgroundRepeat: "no-repeat", backgroundSize: "contain"}} />
+
+                            </div>
                     </Paper>
                 </div>
             );
