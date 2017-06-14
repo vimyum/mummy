@@ -11,6 +11,7 @@ import AssetAddDialog from '../containers/assetAddDialog';
 import AddAssetButton from '../containers/AddAssetButton';
 
 class Assets extends React.Component<any, any> {
+    private needUpdateLayout = false;
     constructor(props) {
         super();
     }
@@ -22,6 +23,8 @@ class Assets extends React.Component<any, any> {
     }
 
     componentDidMount() {
+        console.log('assets componet did mount.');
+        console.log('layout:'+ JSON.stringify(this.props.layout, null, '    '));
     }
 
     componentWillReceiveProps(newProps) {
@@ -31,6 +34,7 @@ class Assets extends React.Component<any, any> {
     }
 
     render() {
+        console.log('Asset render is called');
         let assets = [];
         let x: Number, y: Number;
         this.props.assets.forEach((asset) => {
@@ -38,13 +42,15 @@ class Assets extends React.Component<any, any> {
                 console.log(`e.i:${e.i}, asset.id:${asset.id}`);
                 return (e.i === asset.id);
             })[0];
-            x = layout ? layout.x : 0;
-            y = layout ? layout.y : 0;
 
             if (!layout) {
-                debugger;
+                console.info('layout is UNDEFINED.');
             }
 
+            x = layout ? layout.x : 0;
+            y = layout ? layout.y : 0;
+            console.log(`item will be placed in x:${x}, y:${y}`);
+            
             assets.push(
                 <div key={asset.id} data-grid={{x: x, y: y, w: 2, h: 4}}>
                     <Paper style={{width:"100%", height:"100%"}} 
@@ -55,8 +61,9 @@ class Assets extends React.Component<any, any> {
             );
         });
 
-        return <div>
+        return <div style={{visibility: this.props.tabIndex == 0 ? 'visible' : 'hidden'}}>
         <ResponsiveReactGridLayout className="layout" 
+        layout={this.props.layout}
         onLayoutChange={this.props.onLayoutChange}
         breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
               cols={{lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}}

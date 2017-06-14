@@ -32,7 +32,6 @@ const initialState = {
 }
 
 export default function dashboard(state = initialState, action) {
-  console.log('dashboard reducer is called.');
   switch(action.type) {
     case 'addNewNode':
         let newNodeId = state.nodeMaxId + 1;
@@ -129,7 +128,7 @@ export default function dashboard(state = initialState, action) {
             buildResultMessage: action.message,
         };
     default:
-      console.log('default dashboard reducer is called.');
+      // console.log('default dashboard reducer is called.');
       return state;
   }
 } 

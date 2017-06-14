@@ -10,7 +10,7 @@ export default function dashboard(state = initialState, action) {
         tabIndex: action.index,
        };
     default:
-      console.log('default app reducer is called.');
+      // console.log('default app reducer is called.');
       return state
   }
 } 

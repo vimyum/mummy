@@ -71,7 +71,7 @@ export default function dashboard(state = initialState, action) {
         }
         return state;
     default:
-      console.log('default assets reducer is called.');
+      // console.log('default assets reducer is called.');
       return state;
   }
 } 

@@ -62,13 +62,14 @@ class App extends React.Component<any, IState> {
                     <div>
                     <TabMenu />
                     { this.props.tabIndex === 2 &&
-                        <h1>dashboards</h1>
+                        <h1 >Visual-Board</h1>
                     }
                     { this.props.tabIndex === 1  && this.props.needRefresh === false &&
                         <Dashboard ref='dashboard' />
                     }
-                    { this.props.tabIndex === 0 &&
-                        <Assets />
+                    { 
+                        //<Assets style={{visibility: (this.props.tabIndex == 0 ? 'visible' : 'hidden'),}}/>
+                        <Assets tabIndex={this.props.tabIndex}/>
                     }
                     </div>
                </MuiThemeProvider>);
