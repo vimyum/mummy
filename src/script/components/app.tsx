@@ -68,8 +68,9 @@ class App extends React.Component<any, IState> {
                         <Dashboard ref='dashboard' />
                     }
                     { 
-                        //<Assets style={{visibility: (this.props.tabIndex == 0 ? 'visible' : 'hidden'),}}/>
+                        this.props.tabIndex === 0  && 
                         <Assets tabIndex={this.props.tabIndex}/>
+                        //<Assets tabIndex={this.props.tabIndex}/>
                     }
                     </div>
                </MuiThemeProvider>);

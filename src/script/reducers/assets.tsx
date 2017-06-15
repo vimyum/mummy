@@ -64,6 +64,7 @@ export default function dashboard(state = initialState, action) {
         return state;
     case 'LAYOUT':
         if (action.method === 'update') {
+        console.log('===== update layout. =====');
             return {
                 ...state,
                 layout: action.layout,

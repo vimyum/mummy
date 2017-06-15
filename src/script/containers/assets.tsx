@@ -15,9 +15,6 @@ function mapDispatchToProps(dispatch) {
       onLayoutChange: (layout) => {
           let l = layout[0];
           console.log(`layout is changed. x:${l.x}, y:${l.y}`);
-          if (l.x == 0 || l.y == 0) {
-            return;
-          }
           dispatch({type: 'LAYOUT', method: 'update', layout: layout,});
       }
   };

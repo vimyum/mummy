@@ -56,7 +56,7 @@ class Assets extends React.Component<any, any> {
             assets.push(
                 <div key={asset.id} data-grid={{x: x, y: y, w: 2, h: 8}}>
                     <Paper style={{
-                        width:"100%", height:"100%", } 
+                        width:"100%", height:"100%"}} 
                         className={this.props.classes.paper}>
                         <div style={{padding: "20px 20px 20px 20px"}}>
 
@@ -80,6 +80,8 @@ class Assets extends React.Component<any, any> {
         breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
               cols={{lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}}
               rowHeight={30}
+              measureBeforeMount={true}
+              useCSSTransforms={false}
               verticalCompact={false} >
               {assets}
         </ResponsiveReactGridLayout>
