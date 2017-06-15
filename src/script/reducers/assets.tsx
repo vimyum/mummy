@@ -71,6 +71,16 @@ export default function dashboard(state = initialState, action) {
             };
         }
         return state;
+    case 'ASSET_PARAM':
+        if (action.method === 'update') {
+        let assets = JSON.parse(JSON.stringify(state.assets));
+        assets[action.assetIndex][action.name] = action.value;
+            return {
+                ...state,
+                assets: assets,
+            };
+        }
+        return state;
     default:
       // console.log('default assets reducer is called.');
       return state;

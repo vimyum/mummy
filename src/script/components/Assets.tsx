@@ -35,6 +35,14 @@ class Assets extends React.Component<any, any> {
     componentDidUpdate() {
     }
 
+    updateAssetParamHandler = (e, assetId) => {
+        console.log('on change is called.');
+        console.log(e.target.value);
+        let target = e.target;
+        let asset = this.props.assets.filter(asset => (asset.id === assetId))[0];
+        this.props.updateAssetParamHandler(this.props.assets.indexOf(asset), target.name, target.value);
+    }
+
     render() {
         console.log('Asset render is called');
         let assets = [];
@@ -58,9 +66,11 @@ class Assets extends React.Component<any, any> {
                     <Paper style={{
                         width:"100%", height:"100%"}} 
                         className={this.props.classes.paper}>
-                        <div style={{padding: "20px 20px 20px 20px"}}>
+                        <div id={asset.id} style={{padding: "20px 20px 20px 20px"}}>
 
-						<TextField id="name" label="Name" value={asset.name} />
+						<TextField name="name" label="Name" 
+                            value={asset.name}
+                            onChange={(e)=> {this.updateAssetParamHandler(e, asset.id);}}/>
 
                         <div style={{
                             width: "100%", height: "100px", 

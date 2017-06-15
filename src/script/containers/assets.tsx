@@ -16,7 +16,16 @@ function mapDispatchToProps(dispatch) {
           let l = layout[0];
           console.log(`layout is changed. x:${l.x}, y:${l.y}`);
           dispatch({type: 'LAYOUT', method: 'update', layout: layout,});
-      }
+      },
+      updateAssetParamHandler: (assetIndex, paramName, paramValue) => {
+          dispatch({
+              type: 'ASSET_PARAM',
+              method: 'update',
+              assetIndex: assetIndex,
+              name: paramName,
+              value: paramValue
+          });
+      },
   };
 }
 
