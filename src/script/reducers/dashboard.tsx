@@ -6,7 +6,7 @@ import NodeTemplates from '../nodeTemplates';
 
 const initialState = {
 	nodeMaxId: 10,
-	sideMenuIsOpen: true,
+	sideMenuIsOpen: false,
 	nodes: [],
 	connections: [],
     templates: [{

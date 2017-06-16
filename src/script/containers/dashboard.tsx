@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Dashboard from '../components/dashboard';
 
 function mapStateToProps(state) {
-    return state.dashboard;
+   return {...state.dashboard, currentAsset: state.assets.assets[state.assets.currentAssetIndex]}
 }
 
 function mapDispatchToProps(dispatch) {

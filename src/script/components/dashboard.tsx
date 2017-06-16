@@ -170,6 +170,7 @@ class Dashboard extends React.Component<any, any> {
               }}
               style={{"height":"600px", "width":"800px", "backgroundImage": "url('./grid.jpg')"}}
             >
+            <h1 className='currentAssetName'>Flow of {this.props.currentAsset.name}</h1>
             {nodes}
             <div>
                 <SideMenu isOpen={this.props.sideMenuIsOpen} templates={this.props.templates}/>

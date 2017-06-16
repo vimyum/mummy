@@ -127,7 +127,6 @@ class UndockedDrawer extends React.Component<any, any> {
 
         return (
             <div>
-            <h1>this is a drawer</h1>
             <Drawer
                 paperClassName={classes.drawer}
                 docked={true}

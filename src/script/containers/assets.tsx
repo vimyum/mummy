@@ -26,6 +26,26 @@ function mapDispatchToProps(dispatch) {
               value: paramValue
           });
       },
+      toggleAssetImageParam: (value) => {
+          dispatch({
+              type: 'ASSET_PARAM_IMG_FIELD',
+              value: 'toggle',
+          });
+      },
+      closeAssetImageParam: (value) => {
+          dispatch({
+              type: 'ASSET_PARAM_IMG_FIELD',
+              value: false,
+          });
+      },
+      selectAsset: (assetId) => {
+          console.log('current asset is called.' + assetId);
+          dispatch({
+              type: 'CURRENT_ASSET',
+              value: assetId,
+          });
+      },
+
   };
 }
 

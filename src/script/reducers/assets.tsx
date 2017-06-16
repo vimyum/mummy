@@ -6,7 +6,7 @@ const initialState = {
         name: "my iPhone",
         dispId: "123456", // 製造番号相当
         place: "description",
-        img: "url(./assets/asset_espr.jpg)",
+        img: "./assets/asset_espr.jpg",
         desc: "this is a iPhone",
         locale: {
             name: 'Japan',
@@ -18,31 +18,32 @@ const initialState = {
         id: "espr",
         name: "ESPr Developer",
         desc: "Development Board of ESP8266 which is provided by Switch Science.",
-        img: "url(./assets/asset_espr.jpg)",
+        img: "./assets/asset_espr.jpg",
     },
     {
         id: "esp32",
         name: "ESP32 DevKitC",
         desc: "Development Board of ESP-WROOM-32.",
-        img: "url(./assets/asset_esp32.jpg)",
+        img: "./assets/asset_esp32.jpg",
     },
     {
         id: "uno",
         name: "Arduino UNO",
         desc: "A microcontroller board based on the ATmega328P.",
-        img: "url(./assets/asset_arduino.jpg)",
+        img: "./assets/asset_arduino.jpg",
     },
     {
         id: "iphone",
         name: "iPhone",
         desc: "iPhone has many sensors, such as gps, acceleration, illuminance, and so on..",
-        img: "url(./assets/asset_iphone.png",
+        img: "./assets/asset_iphone.png",
     },
     ],
     currentAssetId: 0,
     assetConfigIsOpen: false,
     assetAddDialogIsOpen: false,
     layout: [],
+    assetImgParamIsOpen: false,
 }
 
 export default function dashboard(state = initialState, action) {
@@ -81,6 +82,27 @@ export default function dashboard(state = initialState, action) {
             };
         }
         return state;
+    case 'ASSET_PARAM_IMG_FIELD':
+        let value: boolean;
+        if (action.value === 'toggle') {
+            value = !state.assetImgParamIsOpen;
+        } else {
+            value = action.value;
+        }
+            
+        return {
+            ...state,
+            assetImgParamIsOpen: value,
+        };
+    case 'CURRENT_ASSET':
+        console.log('currentAsset is ... ' + action.value);
+        let asset = state.assets.filter((asset) => (asset.id === action.value))[0];
+        let index = state.assets.indexOf(asset);
+        return {
+            ...state,
+            currentAssetId: action.value,
+            currentAssetIndex: index,
+        }
     default:
       // console.log('default assets reducer is called.');
       return state;

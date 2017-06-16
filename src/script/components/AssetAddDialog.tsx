@@ -37,7 +37,7 @@ class AssetAddDialog extends React.Component<any, any> {
                         </Typography>
                         <div style={{
                             width: "100%", height: "150px", 
-                            backgroundImage: asset.img,
+                            backgroundImage: `url(${asset.img})`,
                             backgroundRepeat: "no-repeat", backgroundSize: "contain"}} />
                         <Typography type="body1" component="p">
                         {asset.desc}

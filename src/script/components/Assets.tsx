@@ -43,6 +43,14 @@ class Assets extends React.Component<any, any> {
         this.props.updateAssetParamHandler(this.props.assets.indexOf(asset), target.name, target.value);
     }
 
+    fillCompleteHandler = (e, assetId) => {
+        if (e.charCode !== 13) {
+            return;
+        }
+        this.updateAssetParamHandler(e, assetId);
+        this.props.closeAssetImageParam();
+    }
+
     render() {
         console.log('Asset render is called');
         let assets = [];
@@ -63,10 +71,13 @@ class Assets extends React.Component<any, any> {
             
             assets.push(
                 <div key={asset.id} data-grid={{x: x, y: y, w: 2, h: 8}}>
-                    <Paper style={{
-                        width:"100%", height:"100%"}} 
-                        className={this.props.classes.paper}>
-                        <div id={asset.id} style={{padding: "20px 20px 20px 20px"}}>
+                    <Paper style={{width:"100%", height:"100%"}} 
+                        className={this.props.classes.paper + ((this.props.currentAssetId === asset.id) ? ' selectedAsset' : '')}
+                        >
+
+                        <div id={asset.id} style={{padding: "20px 20px 20px 20px"}}
+                            onClick={() => {this.props.selectAsset(asset.id);}}
+                        >
 
 						<TextField name="name" label="Name" 
                             value={asset.name}
@@ -74,10 +85,25 @@ class Assets extends React.Component<any, any> {
 
                         <div style={{
                             width: "100%", height: "100px", 
-                            backgroundImage: asset.img,
-                            backgroundRepeat: "no-repeat", backgroundSize: "contain"}} />
+                            backgroundImage: `url(${asset.img})`,
+                            backgroundRepeat: "no-repeat", backgroundSize: "contain"}} 
+                            onDoubleClick={this.props.toggleAssetImageParam}
+                            />
 
-                            </div>
+						<TextField name="img" label="URL of image" 
+                            defaultValue={asset.img}
+                            onKeyPress={e => this.fillCompleteHandler(e, asset.id)}
+                            style={{display: (this.props.assetImgParamIsOpen == true &&
+                                                this.props.currentAssetId == asset.id) ? 'flex' : 'none'}}
+                        />
+
+						<TextField name="desc" label="Description" 
+                            value={asset.desc}
+                            multiline
+                            rowsMax="4"
+                            onChange={(e)=> {this.updateAssetParamHandler(e, asset.id);}}/>
+
+                        </div>
                     </Paper>
                 </div>
             );

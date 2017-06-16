@@ -17,3 +17,13 @@ body {
 .paper-item {
     cursor: pointer;
 }
+
+.selectedAsset {
+    box-shadow: rgba(51, 105, 30, 0.8) 0px 1px 6px, rgba(51, 105, 30, 0.8) 0px 1px 4px !important;
+}
+
+h1.currentAssetName {
+    color: #C5E1A5;
+    margin-top: 1em;
+    margin-left: 1em;
+}

@@ -41,7 +41,7 @@ const styleSheet = createStyleSheet('ButtonAppBar', {
     startButton: {
 		backgroundColor: lightGreen[700],
         textTransform: "none",
-        marginTop: "2em",
+        marginTop: "4em",
     },
     gridContainer: {
         textAlign: "center",
@@ -70,19 +70,26 @@ class App extends React.Component<any, any> {
         </Toolbar>
         </AppBar>
 		<div id="titleContainer">
-           <h1 id="mainTitle">ESPer Flow</h1>
+           <h1 id="mainTitle">plamo connect.</h1>
            <h5 id="subTitle">version alpha-0.1</h5>
-        </div>
-        <Grid container justify="center" className={classes.gridContainer}>
-            <Grid item xs={12} className="gridItem">
             <Button component="a"raised primary className={classes.startButton}
                 href="index.html">Try now</Button>
+        </div>
+        <Grid container justify="center" className={classes.gridContainer}>
+            <Grid item xs={4} className="gridItem">
+                <p>ゲストとして試す</p>
+            </Grid>
+            <Grid item xs={4} className="gridItem">
+                <p>ユーザ登録</p>
+            </Grid>
+            <Grid item xs={4} className="gridItem">
+                <p>ローカルで利用</p>
             </Grid>
             <Grid item xs={6}>
-                <p>簡単な説明</p>
+                <p>なにか説明を記述</p>
             </Grid>
             <Grid item xs={6}>
-                <p>Join us.</p>
+                <p>使用例とか</p>
             </Grid>
         </Grid>
   </div>);
