@@ -5,8 +5,8 @@ import app from './reducers/app';
 
 const rootReducer = combineReducers({
     app,
-    dashboard,
     assets,
+    dashboard,
 });
 
 export default rootReducer;

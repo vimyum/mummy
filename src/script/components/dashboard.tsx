@@ -143,6 +143,9 @@ class Dashboard extends React.Component<any, any> {
 
     render() {
         let nodes = [];
+        if (!this.props.nodes) {
+            debugger;
+        }
         for (let node of this.props.nodes) {
             nodes.push(
                 <Node 

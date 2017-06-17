@@ -1,6 +1,6 @@
 const initialState = {
     assets: [{
-        id: '0000-0001',
+        id: '0000-0000',
         type: "iphone", //or ESP8266, ESP32, Nefly, and more.
         view: {x: 4, y: 0, w: 3, h: 2}, // TBD: should be removed. Layoute follows 'layout' state.
         name: "my iPhone",
@@ -39,7 +39,8 @@ const initialState = {
         img: "./assets/asset_iphone.png",
     },
     ],
-    currentAssetId: 0,
+    currentAssetId: '0000-0000',
+    currentAssetIndex: 0,
     assetConfigIsOpen: false,
     assetAddDialogIsOpen: false,
     layout: [],

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import NodeConfig from '../components/nodeConfig';
 
 function mapStateToProps(state) {
-  return state.dashboard;
+  return {...state.dashboard[state.assets.currentAssetId], currentAsset: state.assets.assets[state.assets.currentAssetIndex]};
 }
 
 function mapDispatchToProps(dispatch) {

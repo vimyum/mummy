@@ -4,11 +4,10 @@ import InboxIcon from 'material-ui-icons/Inbox';
 import LightbulbOutline from 'material-ui-icons/LightbulbOutline';
 import NodeTemplates from '../nodeTemplates';
 
-const initialState = {
-	nodeMaxId: 10,
-	sideMenuIsOpen: false,
-	nodes: [],
-	connections: [],
+const initialAsset = {
+    nodeMaxId: 10,
+    nodes: [],
+    connections: [],
     templates: [{
         name: "GPIO Input", //表示用
         type: "gpio_in",   // 識別用
@@ -21,41 +20,61 @@ const initialState = {
         iconElement: <InboxIcon />,
     },
     ],
-	nodeConfigIsOpen: false,
-	currentNode: 0,
-	currentAsset: 0,
-	needRefresh: false,
+    currentNode: 0,
+
+    nodeConfigIsOpen: false,
+    sideMenuIsOpen: false,
+    needRefresh: false,
     isNeedConnectionUpdate: false,
     refreshFuncs: [],
     buildResultIsOpen: false,
     buildResultMessage: 'unknown',
-}
+};
+
+const initialState = {
+    '0000-0000': initialAsset,
+    needRefresh: false,
+};
+
+// let initAssetState = initialState.assets['0000-0000'];
 
 export default function dashboard(state = initialState, action) {
+
+  let assetId = action.currentAsset ? action.currentAsset.id : '0000-0000';
+  let asset = (state[assetId]) ? state[assetId] : initialAsset;
+
   switch(action.type) {
     case 'addNewNode':
-        let newNodeId = state.nodeMaxId + 1;
+        let newNodeId = asset.nodeMaxId + 1;
         let template = NodeTemplates.get(action.node.type);
+
         return {
             ...state,
-            nodeMaxId: state.nodeMaxId + 1,
-            nodes : [...state.nodes, {
-                id: state.nodeMaxId + 1,
-                type: action.node.type,
-                top: action.node.top + "px",
-                left: action.node.left + "px",
-                conf: JSON.parse(JSON.stringify(template.config)), 
-            }],
+            [assetId] : {
+                ...asset,
+                nodeMaxId: asset.nodeMaxId + 1,
+                nodes : [...asset.nodes, {
+                    id: asset.nodeMaxId + 1,
+                    type: action.node.type,
+                    top: action.node.top + "px",
+                    left: action.node.left + "px",
+                    conf: JSON.parse(JSON.stringify(template.config)), 
+                }],
+            }
        };
+
     case 'toggleSideMenu':
         return {
             ...state,
-            sideMenuIsOpen: !state.sideMenuIsOpen,
+            [assetId] : {
+                ...asset,
+                sideMenuIsOpen: !asset.sideMenuIsOpen,
+            }
         };
 
     case 'updateNodePosition':
         console.log("updateNodePosition is called.");
-        let currentNodes = state.nodes;
+        let currentNodes = asset.nodes;
         let targetNode = currentNodes.filter(e => {
             return (e.id == action.nodeId);
         })[0];
@@ -66,50 +85,68 @@ export default function dashboard(state = initialState, action) {
         targetNode.top  = `${action.top}px`;
         return {
             ...state,
-            nodes : currentNodes
+            [assetId] : {
+                ...asset,
+                nodes : currentNodes,
+            },
         };
  
     case 'updateConnections':
         return {
             ...state,
-            connections: action.connections,
+            [assetId] : {
+                ...asset,
+                connections: action.connections,
+            },
         };
     case 'selectNode':
         return {
             ...state,
-            currentNode: action.nodeId,
+            [assetId] : {
+                ...asset,
+                currentNode: action.nodeId,
+            }
         };
     case 'openNodeConfig':
         console.log('openNodeConfig reduce is called.');
         return {
             ...state,
-            nodeConfigIsOpen: action.opened,
+            [assetId] : {
+                ...asset,
+                nodeConfigIsOpen: action.opened,
+            }
         };
 
     case 'updateNodeConfig':
         console.log('updateNodeConfig is called with ' + JSON.stringify(action.config));
-        let node = state.nodes.filter((node) => node.id == state.currentNode)[0];
-        let nodeAryIdx = state.nodes.indexOf(node);
+        let node = asset.nodes.filter((node) => node.id == asset.currentNode)[0];
+        let nodeAryIdx = asset.nodes.indexOf(node);
 
         let config = node.conf.filter((item, idx) => item.name == action.config.name)[0];
         let configAryIdx = node.conf.indexOf(config);
-        let newNodes = JSON.parse(JSON.stringify([ ...state.nodes ]));
+        let newNodes = JSON.parse(JSON.stringify([ ...asset.nodes ]));
         newNodes[nodeAryIdx][configAryIdx] = action.config;
         return {
            ...state,
-           nodes : newNodes,
+            [assetId] : {
+                ...asset,
+                nodes : newNodes,
+            },
         };
 
     case 'removeNode':
         console.log("removeNode is called");
         return {
             ...state,
-            nodes: state.nodes.filter((node) => (node.id != state.currentNode)),
-            connections: state.connections.filter((con) => {
-                console.log(`currentNode:${state.currentNode}, sourceId:${con.sourceId}, targetId:${con.targetId}`);
-                return (con.sourceId != state.currentNode) && (con.targetId != state.currentNode);
-            }),
             needRefresh: true,
+            [assetId] : {
+                ...asset,
+                nodes: asset.nodes.filter((node) => (node.id != asset.currentNode)),
+                    connections: asset.connections.filter((con) => {
+                    console.log(`currentNode:${asset.currentNode}, sourceId:${con.sourceId}, targetId:${con.targetId}`);
+                    return (con.sourceId != asset.currentNode) && (con.targetId != asset.currentNode);
+                }),
+            },
         };
     case 'needRefresh':
         return { 
@@ -119,16 +156,28 @@ export default function dashboard(state = initialState, action) {
     case 'needConnectionUpdate':
         return {
             ...state,
-            isNeedConnectionUpdate: action.value,
+            [assetId] : {
+                ...asset,
+                isNeedConnectionUpdate: action.value,
+            },
         };
     case 'buildResultIsOpen':
         return {
             ...state,
-            buildResultIsOpen: action.value,
-            buildResultMessage: action.message,
+            [assetId] : {
+                ...asset,
+                buildResultIsOpen: action.value,
+                buildResultMessage: action.message,
+            },
         };
     default:
       // console.log('default dashboard reducer is called.');
-      return state;
+      return {
+        ...state,
+        [assetId] : {
+            ...asset,
+        },
+      };
   }
 } 
+

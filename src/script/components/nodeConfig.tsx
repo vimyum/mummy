@@ -6,8 +6,6 @@ import Button from 'material-ui/Button';
 import NodeTemplates from '../nodeTemplates';
 import TextField from 'material-ui/TextField';
 
-
-
 class NodeConfig extends React.Component<any, any> {
 
   handleCancel = () => {
